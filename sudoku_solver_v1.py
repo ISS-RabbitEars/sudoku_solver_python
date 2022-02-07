@@ -179,10 +179,8 @@ for bi in range(3):
 		i=0
 		for ei in range(3):
 			for ej in range(3):
-				#temp.append(ttk.Entry(gb,width=1,textvariable=sav[bi*3+ej][bj*3+ei]))
 				temp.append(ttk.Entry(gb,width=1,textvariable=sav[bi*3+ei][bj*3+ej]))
 				temp[i].grid(row=bi*3+ei,column=bj*3+ej)
-				#temp[i].grid(column=bj*3+ei+1,row=bi*3+ej+1)
 				i+=1
 		sa.append(temp)
 
