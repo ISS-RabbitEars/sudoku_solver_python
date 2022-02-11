@@ -5,7 +5,7 @@ from tkinter import ttk
 import numpy as np
 
 
-def partition(a):
+def sa_partition(a):
     b = init_array()
     m = 0
     for i in (0, 3, 6):
@@ -44,21 +44,24 @@ def reduce(x):
             for j in range(9):
                 if x[i][j] == 0:
                     sa_transpose = x.T
-                    sa_boxes = partition(x)
+                    sa_boxes = sa_partition(x)
                     m = i // 3
                     n = j // 3
-                    temp = sa_boxes[m * 3 + n]
-                    union = np.union1d(sa_transpose[j], temp)
+                    box_mn = sa_boxes[m * 3 + n]
+                    union = np.union1d(sa_transpose[j], box_mn)
                     union = np.union1d(union, x[i])
                     comp = np.setdiff1d(fs, union)
                     y[i][j] = comp.tolist()
-                    if len(y[i][j]) == 1:
-                        x[i][j] = y[i][j][0]
+                    if comp.size == 1:
+                        x[i][j] = comp[0]
                         y[i][j] = []
                         x, y = reduce(x)
                         x, y = hidden_singles_row(x, y)
                         x, y = hidden_singles_column(x, y)
                         x, y = hidden_singles_box(x, y)
+                        x, y = locked_pair_row(x, y)
+                        x, y = locked_pair_column(x, y)
+                        x, y = locked_pair_box(x, y)
     return x, y
 
 
@@ -66,7 +69,7 @@ def hidden_singles_row(x, y):
     for i in range(9):
         for j in range(9):
             if x[i][j] == 0:
-                union =np.zeros([1], dtype=int)
+                union = np.zeros([1], dtype=int)
                 for k in range(9):
                     if k != j and x[i][k] == 0:
                         note = np.asarray(y[i][k])
@@ -83,7 +86,7 @@ def hidden_singles_column(x, y):
     for i in range(9):
         for j in range(9):
             if x[i][j] == 0:
-                union =np.zeros([1], dtype=int)
+                union = np.zeros([1], dtype=int)
                 for k in range(9):
                     if k != i and x[k][j] == 0:
                         note = np.asarray(y[k][j])
@@ -104,7 +107,7 @@ def hidden_singles_box(x, y):
                     ii = i + k
                     jj = j + l
                     if x[ii][jj] == 0:
-                        union =np.zeros([1], dtype=int)
+                        union = np.zeros([1], dtype=int)
                         for m in range(3):
                             for n in range(3):
                                 mm = i + m
@@ -117,6 +120,74 @@ def hidden_singles_box(x, y):
                         if comp.size == 1:
                             x[ii][jj] = comp[0]
                             x, y = reduce(x)
+    return x, y
+
+
+def locked_pair_row(x, y):
+    for i in range(9):
+        for j in range(9):
+            note1 = np.asarray(y[i][j])
+            if x[i][j] == 0 and note1.size == 2:
+                for k in range(9):
+                    note2 = np.asarray(y[i][k])
+                    if k != j and x[i][k] == 0 and np.array_equal(note1, note2):
+                        for m in range(9):
+                            if m != j and m != k and x[i][m] == 0:
+                                note3 = np.asarray(y[i][m])
+                                comp = np.setdiff1d(note3, note2)
+                                y[i][m] = comp.tolist()
+                                if comp.size == 1:
+                                    x[i][m] = comp[0]
+                                    x, y = reduce(x)
+    return x, y
+
+
+def locked_pair_column(x, y):
+    for i in range(9):
+        for j in range(9):
+            note1 = np.asarray(y[i][j])
+            if x[i][j] == 0 and note1.size == 2:
+                for k in range(9):
+                    note2 = np.asarray(y[k][j])
+                    if k != i and x[k][j] == 0 and np.array_equal(note1, note2):
+                        for m in range(9):
+                            if m != i and m != k and x[m][j] == 0:
+                                note3 = np.asarray(y[m][j])
+                                comp = np.setdiff1d(note3, note2)
+                                y[m][j] = comp.tolist()
+                                if comp.size == 1:
+                                    x[m][j] = comp[0]
+                                    x, y = reduce(x)
+    return x, y
+
+
+def locked_pair_box(x, y):
+    for i in (0, 3, 6):
+        for j in (0, 3, 6):
+            for k in range(3):
+                for l in range(3):
+                    ii = i + k
+                    jj = j + l
+                    noteiijj = np.asarray(y[ii][jj])
+                    if x[ii][jj] == 0 and noteiijj.size == 2:
+                        for m in range(3):
+                            for n in range(3):
+                                mm = i + m
+                                nn = j + n
+                                notemmnn = np.asarray(y[mm][nn])
+                                if not (mm == ii and nn == jj) and x[mm][nn] == 0 and \
+                                        np.array_equal(noteiijj, notemmnn):
+                                    for m1 in range(3):
+                                        for n1 in range(3):
+                                            mm1 = i + m1
+                                            nn1 = j + n1
+                                            if not (mm1 == ii and nn1 == jj) and not (mm1 == mm and nn1 == nn) and \
+                                                    x[mm1][nn1] == 0:
+                                                notemm1nn1 = np.asarray(y[mm1][nn1])
+                                                comp = np.setdiff1d(notemm1nn1, notemmnn)
+                                                if comp.size == 1:
+                                                    x[mm1][nn1] = comp[0]
+                                                    x, y = reduce(x)
     return x, y
 
 
@@ -153,7 +224,8 @@ def solve():
         set_grid(s)
     except:
         tkinter.messagebox.showerror('Input Error',
-                                     'You either entered \'09\' instead of \'9\' or you left a space blank. Please use \'0\' for empty cells. Thank you.')
+                                     'You either entered \'09\' instead of \'9\' or you left a space blank. Please \\'
+                                     'use \'0\' for empty cells. Thank you.')
 
 
 # ------------------------------------------------------
@@ -179,7 +251,6 @@ for i in range(9):
     for j in range(9):
         temp.append(tk.IntVar())
     sav.append(temp)
-
 
 
 sa = []
