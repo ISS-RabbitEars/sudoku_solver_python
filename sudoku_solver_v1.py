@@ -153,8 +153,8 @@ def solve():
         set_grid(s)
     except:
         tkinter.messagebox.showerror('Input Error',
-                                     'You either entered \'09\' instead of \'9\' or you left a space blank. Please use \'0\' for empty cells. Thank you.')
-
+                                     'You either entered \'09\' instead of \'9\' or you left a space blank. Please '
+                                     'use \'0\' for empty cells. Thank you.')
 
 # ------------------------------------------------------
 root = tk.Tk()
