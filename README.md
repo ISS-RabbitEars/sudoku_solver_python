@@ -9,3 +9,5 @@ v3.0 locked/hidden triples
 
 v4.0 pointing pairs/triples
 
+v5.0 spearated my reduction routine into 2 algorithms to preserve notes through iterations
+
