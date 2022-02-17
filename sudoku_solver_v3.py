@@ -72,7 +72,7 @@ def hidden_singles_row(x, y):
                 if comp.size == 1:
                     x[i][j] = comp[0]
                     y[i][j] = []
-                x, y = reduce(x)
+            x, y = reduce(x)
     return x, y
 
 
@@ -90,7 +90,7 @@ def hidden_singles_column(x, y):
                 if comp.size == 1:
                     x[i][j] = comp[0]
                     y[i][j] = []
-                x, y = reduce(x)
+            x, y = reduce(x)
     return x, y
 
 
@@ -115,7 +115,7 @@ def hidden_singles_box(x, y):
                         if comp.size == 1:
                             x[ii][jj] = comp[0]
                             y[ii][jj] = []
-                        x, y = reduce(x)
+                    x, y = reduce(x)
     return x, y
 
 
