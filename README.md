@@ -11,3 +11,5 @@ v4.0 pointing pairs/triples
 
 v5.0 spearated my reduction routine into 2 algorithms to preserve notes through iterations
 
+v6.0 box/line reduction
+
