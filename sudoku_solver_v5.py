@@ -66,7 +66,6 @@ def update(x, y, n, i, j):
         note = np.asarray(y[i][jj], dtype=int)
         comp = np.setdiff1d(note, n)
         y[i][jj] = comp.tolist()
-        #print('update-row', i, jj, note, n, comp)
         if comp.size == 1:
             x[i][jj] = comp[0]
             y[i][jj] = []
@@ -76,7 +75,6 @@ def update(x, y, n, i, j):
         note = np.asarray(y[ii][j], dtype=int)
         comp = np.setdiff1d(note, n)
         y[ii][j] = comp.tolist()
-        #print('update-column', ii, j, note, n, comp)
         if comp.size == 1:
             x[ii][j] = comp[0]
             y[ii][j] = []
@@ -533,7 +531,8 @@ def solve():
         notes_temp = init_notes()
         s = get_grid()
         s, notes = create_notes_reduce(s)
-        while notes != notes_temp:
+        count = 0
+        while notes != notes_temp and count<=2:
             notes_temp = notes
             s, notes = reduce(s, notes)
             s, notes = hidden_singles_row(s, notes)
@@ -552,7 +551,7 @@ def solve():
             s, notes = pointing_column(s, notes)
             if notes_temp == notes:
                 s, notes = create_notes_reduce(s)
-
+                count+=1
         set_grid(s)
     except:
         tkinter.messagebox.showerror('Input Error',
