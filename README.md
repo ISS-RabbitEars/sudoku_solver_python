@@ -7,3 +7,5 @@ v2.0 locked pairs
 
 v3.0 locked/hidden triples
 
+v4.0 pointing pairs/triples
+
