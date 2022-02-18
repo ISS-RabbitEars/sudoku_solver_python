@@ -13,3 +13,5 @@ v5.0 spearated my reduction routine into 2 algorithms to preserve notes through 
 
 v6.0 box/line reduction
 
+v7.0 x-wing
+
