@@ -15,3 +15,5 @@ v6.0 box/line reduction
 
 v7.0 x-wing
 
+v8.0 hidden pairs and updated hidden triples
+
