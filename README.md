@@ -17,3 +17,5 @@ v7.0 x-wing
 
 v8.0 hidden pairs and updated hidden triples
 
+v9.0 y-wing
+
